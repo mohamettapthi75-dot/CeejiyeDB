@@ -1,71 +1,119 @@
-# CeejiyeDB 🇸🇴
+<div align="center">
 
-CeejiyeDB waa keyd xogeed (database) fudud oo loo dhisay si la mid ah Redis, balse isticmaala afka Soomaaliga (**CeejiyeLang syntax**). Mashruucan waxaa loo sameeyay si loogu fududeeyo barashada dhismaha database-yada iyo isticmaalka luuqad barnaamijyadeed oo Soomaali ah.
+# 🗄️ CeejiyeDB
+
+### *Xogta Soomaalida — The Somali Database Engine*
+
+
+
+![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)
+
+
+
+
+![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
+
+
+
+
+![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge)
+
+
+
+
+![Language](https://img.shields.io/badge/Language-Somali-blue?style=for-the-badge)
+
+
+
+**CeejiyeDB** waa engine database oo Python ku dhisan, Redis u eg, laakiin amarrada **Af-Soomaali** ku hadla — CeejiyeLang.
+
+[🚀 Bilow Hadda](#-sida-loo-isticmaalo) · [📖 Amarrada](#-amarrada-ceejiiyelang) · [🏗️ Qaab-dhismeedka](#%EF%B8%8F-qaab-dhismeedka)
+
+</div>
 
 ---
 
-## ✨ Astaamaha (Features)
+## ✨ Maxay CeejiyeDB Gaara Tahay?
 
-- **In-memory Storage:** Xogta waxaa lagu hayaa RAM-ka si ay u noqoto mid aad u dhakhso badan.
-- **Persistence:** Xogta si toos ah ayaa loogu kaydiyaa faylka `data.json` si aysan u lumin marka barnaamijka la xiro.
-- **Somali Commands:** Dhammaan amarrada lagu maamulo database-ka waa af-Soomaali.
-- **Colored CLI:** Interface midabo leh oo ku tusaya guusha ama khalaadka dhaca.
-- **Modular Design:** Habdhismeed nadiif ah oo loo qaybiyay qaybo kala duwan (Parser, Storage, Commands).
+- 🇸🇴 **Af-Soomaali** — Amarrada oo dhan Soomaali
+- ⚡ **Xawli sarreeya** — In-memory storage, Redis u eg
+- 💾 **Xog la badbaadin karo** — JSON persistence toos ah
+- 🛡️ **Ammaan** — Error handling buuxa
+- 🧩 **Fudud** — Akhrin, baranba fudud
 
 ---
 
-## 🚀 Sida loo bilaabo (Getting Started)
+## 🚀 Sida Loo Isticmaalo
 
-### Shuruudaha
-Waxaad u baahan tahay oo kaliya **Python 3.x**.
+### 1. Ku keen mashiinkaaga
+```bash
+git clone https://github.com/mohamettapthi75-dot/CeejiyeDB.git
+cd CeejiyeDB
+```
 
-### Sida loo orodka (Run)
-Isticmaal amarkan si aad u bilawdo database-ka:
+### 2. Bilow
 ```bash
 python3 ceejiyedb/main.py
 ```
 
----
-
-## 🛠 Amarrada (Commands)
-
-CeejiyeDB waxay taageertaa amarradan soo socda:
-
-1. **KAYDI**: Waxaa loo isticmaalaa in xog lagu kaydiyo.
-   - *Habka:* `KAYDI <fure> <qiimo>`
-   - *Tusaale:* `KAYDI magac Ceejiye`
-
-2. **SOOQAAD**: Waxaa loo isticmaalaa in xog horay u kaydsanayd la soo saaro.
-   - *Habka:* `SOOQAAD <fure>`
-   - *Tusaale:* `SOOQAAD magac`
-
-3. **TIR**: Waxaa loo isticmaalaa in xogta lagu tirtiro.
-   - *Habka:* `TIR <fure>`
-   - *Tusaale:* `TIR magac`
-
-4. **DHAMAN**: Waxaa loo isticmaalaa in laga baxo (exit) barnaamijka.
-   - *Habka:* `DHAMAN`
-
----
-
-## 📁 Habdhismeedka Mashruuca (Project Structure)
-
+### 3. Bilaabis
 ```text
-ceejiyedb/
- ├── main.py        # CLI-ga iyo isku xirka barnaamijka
- ├── parser.py      # Kala dhig-dhigga amarrada Soomaaliga ah
- ├── storage.py     # Maamulka xogta ee RAM-ka iyo faylka JSON
- ├── commands.py    # Fulinta amarrada (Logic)
- └── data.json      # Halka xogtu ku kaydsantahay (Persistence)
+╔══════════════════════════════╗
+║     CeejiyeDB v1.1.0  🇸🇴   ║
+║  Xogta Soomaalida, Xoogga   ║
+╚══════════════════════════════╝
+Ku soo dhawoow CeejiyeDB. Qor CAAWI si aad amarrada u aragto.
 ```
 
+## 📖 Amarrada CeejiyeLang
+
+| Amar | Isticmaalka | Tusaale | Macnaha |
+| :--- | :--- | :--- | :--- |
+| **KAYDI** | `KAYDI <fur> <qii>` | `KAYDI magac Ceejiye` | Keydi qiime |
+| **SOOQAAD** | `SOOQAAD <fur>` | `SOOQAAD magac` | Soo qaad qiime |
+| **TIR** | `TIR <fur>` | `TIR magac` | Tir fur |
+| **CUSB** | `CUSB <fur> <qii>` | `CUSB magac Fadumo` | Cusboonaysii qiime |
+| **TIJAABO** | `TIJAABO <fur>` | `TIJAABO magac` | Hubi in fur jiro |
+| **LIIS** | `LIIS` | `LIIS` | Tus dhammaan furahaaga |
+| **TIRI** | `TIRI` | `TIRI` | Tiri furaha |
+| **NADIIFI** | `NADIIFI` | `NADIIFI` | Nadiifi xog oo dhan |
+| **CAAWI** | `CAAWI` | `CAAWI` | Tus amarrada oo dhan |
+| **DHAMAN** | `DHAMAN` | `DHAMAN` | Ka bax |
+
 ---
 
-## 👨‍💻 Horumarinta Mustaqbalka (Future Roadmap)
-- [ ] Taageerada **EXPIRE** (Xogta oo waqti kadib is tirtirta).
-- [ ] Isku xirka **TCP Server** (Si database-ka meel fog looga soo galo).
-- [ ] Taageerada **Data Types** kale sida Lists iyo Hashes.
+## 🏗️ Qaab-dhismeedka
+```text
+CeejiyeDB/
+├── ceejiyedb/
+│   ├── main.py        # CLI interface + banner + CAAWI
+│   ├── parser.py      # Command tokenizer iyo parser
+│   ├── storage.py     # In-memory store + JSON persistence
+│   └── commands.py    # Fulinta amarrada oo dhan
+├── data.json          # Database file (auto-created)
+├── .gitignore
+└── README.md
+```
+
+## ⚙️ Sida Gudaha u Shaqeyso
+Isticmaalaha → **main.py** → **parser.py** → **commands.py** → **storage.py** → **data.json**
+
+- **parser.py** — Amarku wuu kala gooyo token-ka
+- **commands.py** — Amarka wuu fuliyo
+- **storage.py** — Xogta wuu keydiyo (memory + JSON)
 
 ---
 
-**CeejiyeDB** waa qayb ka mid ah dadaallada lagu horumarinayo agabka software-ka ee ku baxa Af-Soomaaliga. Ku raaxayso! 🚀
+## 🗺️ Mustaqbalka (Roadmap)
+- [ ] **MUDDAD** — TTL / key expiry
+- [ ] **KOOB** — Integer increment
+- [ ] **CeejiyeLang SDK** (Python package)
+- [ ] **TCP server** (run as daemon)
+- [ ] **Web dashboard**
+
+## 📄 Ruqsadda
+MIT License © 2025 mohamettapthi75-dot
+
+---
+
+**CeejiyeDB — Af-Soomaali, Xoog Buuxa 🇸🇴**

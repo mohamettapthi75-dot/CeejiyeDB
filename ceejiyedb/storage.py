@@ -26,7 +26,8 @@ class Storage:
                         self.data = json.loads(content)
                     else:
                         self.data = {}
-            except (json.JSONDecodeError, IOError):
+            except (json.JSONDecodeError, IOError) as e:
+                print(f"Digniin: Faylka xogta ({self.filepath}) wuu kharriban yahay ama lama akhriyi karo. Database-ka waa la banneeyay.")
                 self.data = {}
         else:
             self.data = {}
@@ -56,3 +57,21 @@ class Storage:
             self.save()
             return True
         return False
+
+    def count(self):
+        """Returns the number of keys in storage."""
+        return len(self.data)
+
+    def exists(self, key):
+        """Checks if a key exists in storage."""
+        return key in self.data
+
+    def clear(self):
+        """Clears all data from storage and persists."""
+        self.data = {}
+        self.save()
+        return True
+
+    def get_all_keys(self):
+        """Returns all keys in storage."""
+        return list(self.data.keys())
