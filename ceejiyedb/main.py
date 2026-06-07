@@ -1,6 +1,12 @@
-from storage import Storage
-from parser import Parser
-from commands import CommandHandler
+import sys
+import os
+
+# Ensure we can import ceejiye_core after build
+sys.path.append(os.getcwd())
+
+import ceejiye_core
+from ceejiyedb.parser import Parser
+from ceejiyedb.commands import CommandHandler
 
 # ANSI colors for terminal output
 BLUE = "\033[94m"
@@ -13,7 +19,7 @@ BOLD = "\033[1m"
 def print_banner():
     banner = f"""{BOLD}{BLUE}
 ╔══════════════════════════════╗
-║     CeejiyeDB v1.1.0  🇸🇴   ║
+║     CeejiyeDB v2.0.0  🦀   ║
 ║  Xogta Soomaalida, Xoogga   ║
 ╚══════════════════════════════╝{RESET}
 """
@@ -32,13 +38,21 @@ TIJAABO     TIJAABO <fur>           TIJAABO magac       Hubi in fur jiro
 LIIS        LIIS                    LIIS                Tus dhammaan furahaaga
 TIRI        TIRI                    TIRI                Tiri furaha
 NADIIFI     NADIIFI                 NADIIFI             Nadiifi xog oo dhan
+MUDDAD      MUDDAD <fur> <ilb>      MUDDAD magac 60     Set TTL
+KOOB        KOOB <fur>              KOOB tiriye         Increment
+NOOC        NOOC <fur>              NOOC magac          Show type
 CAAWI       CAAWI                   CAAWI               Tus amarrada oo dhan
 DHAMAN      DHAMAN                  DHAMAN              Ka bax
 """
     print(help_text)
 
 def main():
-    storage = Storage()
+    # Initialize Rust core storage
+    storage = ceejiye_core.CeejiyeStore()
+
+    # Start TCP server in background
+    storage.start_server(7379)
+
     parser = Parser()
     handler = CommandHandler(storage)
 
@@ -46,9 +60,7 @@ def main():
 
     while True:
         try:
-            # Interactive terminal prompt
             user_input = input(f"{BOLD}{YELLOW}CeejiyeDB > {RESET}")
-
             command, args = parser.parse(user_input)
 
             if command is None:
@@ -64,22 +76,18 @@ def main():
                 print_help()
                 continue
 
-            # Internal markers from CommandHandler are now checked using explicit codes
             if isinstance(response, str) and response.startswith("SUCCESS:"):
-                clean_msg = response.replace("SUCCESS:", "")
-                print(f"{GREEN}{clean_msg}{RESET}")
+                print(f"{GREEN}{response.replace('SUCCESS:', '')}{RESET}")
             elif isinstance(response, str) and response.startswith("ERROR:"):
-                clean_msg = response.replace("ERROR:", "")
-                print(f"{RED}{clean_msg}{RESET}")
+                print(f"{RED}{response.replace('ERROR:', '')}{RESET}")
             else:
-                # This is likely a value returned from SOOQAAD or LIIS/TIRI
                 print(f"{BOLD}{response}{RESET}")
 
         except KeyboardInterrupt:
             print(f"\n{GREEN}Nabad gelyo! 👋{RESET}")
             break
         except Exception as e:
-            print(f"{RED}Khalad aan la filayn: {e}{RESET}")
+            print(f"{RED}Khalad: {e}{RESET}")
 
 if __name__ == "__main__":
     main()
