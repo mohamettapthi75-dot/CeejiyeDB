@@ -1,12 +1,6 @@
-import sys
-import os
-
-# Ensure we can import ceejiye_core after build
-sys.path.append(os.getcwd())
-
-import ceejiye_core
-from ceejiyedb.parser import Parser
-from ceejiyedb.commands import CommandHandler
+from storage import Storage
+from parser import Parser
+from commands import CommandHandler
 
 # ANSI colors for terminal output
 BLUE = "\033[94m"
@@ -19,40 +13,31 @@ BOLD = "\033[1m"
 def print_banner():
     banner = f"""{BOLD}{BLUE}
 ╔══════════════════════════════╗
-║     CeejiyeDB v2.0.0  🦀   ║
+║     CeejiyeDB v1.2.0  🇸🇴   ║
 ║  Xogta Soomaalida, Xoogga   ║
 ╚══════════════════════════════╝{RESET}
 """
     print(banner)
-    print("Ku soo dhawoow CeejiyeDB. Qor CAAWI si aad amarrada u aragto.")
+    print("Ku soo dhawoow CeejiyeDB v1.2.0. Qor CAAWI si aad amarrada u aragto.")
 
 def print_help():
     help_text = f"""
-{BOLD}📖 Amarrada CeejiyeLang{RESET}
+{BOLD}📖 Amarrada CeejiyeLang v1.2.0{RESET}
 {YELLOW}Amar        Isticmaalka             Tusaale             Macnaha{RESET}
-KAYDI       KAYDI <fur> <qii>       KAYDI magac Ceejiye Keydi qiime
+KAYDI       KAYDI <fur> <qii>       KAYDI magac Jules   Keydi qiime
 SOOQAAD     SOOQAAD <fur>           SOOQAAD magac       Soo qaad qiime
 TIR         TIR <fur>               TIR magac           Tir fur
-CUSB        CUSB <fur> <qii>        CUSB magac Fadumo   Cusboonaysii qiime
-TIJAABO     TIJAABO <fur>           TIJAABO magac       Hubi in fur jiro
-LIIS        LIIS                    LIIS                Tus dhammaan furahaaga
-TIRI        TIRI                    TIRI                Tiri furaha
-NADIIFI     NADIIFI                 NADIIFI             Nadiifi xog oo dhan
-MUDDAD      MUDDAD <fur> <ilb>      MUDDAD magac 60     Set TTL
-KOOB        KOOB <fur>              KOOB tiriye         Increment
-NOOC        NOOC <fur>              NOOC magac          Show type
-CAAWI       CAAWI                   CAAWI               Tus amarrada oo dhan
+MUDDAD      MUDDAD <fur> <ilb>      MUDDAD x 60         Set TTL
+KOOB        KOOB <fur>              KOOB tiriye         Kordhi (Increment)
+DHIMIS      DHIMIS <fur>            DHIMIS tiriye       Dhim (Decrement)
+XAALAD      XAALAD                  XAALAD              Tus xaaladda DB
+CAAWI       CAAWI                   CAAWI               Tus amarrada
 DHAMAN      DHAMAN                  DHAMAN              Ka bax
 """
     print(help_text)
 
 def main():
-    # Initialize Rust core storage
-    storage = ceejiye_core.CeejiyeStore()
-
-    # Start TCP server in background
-    storage.start_server(7379)
-
+    storage = Storage()
     parser = Parser()
     handler = CommandHandler(storage)
 
@@ -60,7 +45,11 @@ def main():
 
     while True:
         try:
+            # Active expiration purge before each prompt
+            storage.purge_expired()
+
             user_input = input(f"{BOLD}{YELLOW}CeejiyeDB > {RESET}")
+
             command, args = parser.parse(user_input)
 
             if command is None:
@@ -81,6 +70,7 @@ def main():
             elif isinstance(response, str) and response.startswith("ERROR:"):
                 print(f"{RED}{response.replace('ERROR:', '')}{RESET}")
             else:
+                # Value return or Multi-line report
                 print(f"{BOLD}{response}{RESET}")
 
         except KeyboardInterrupt:

@@ -1,29 +1,5 @@
-# Rust
-target/
-core/target/
-Cargo.lock
-core/Cargo.lock
-
-# Python
 __pycache__/
 *.py[cod]
 *$py.class
-*.so
-*.pyd
-*.whl
-dist/
-build/
-.maturin/
-core/.maturin/
-.venv/
-venv/
-ENV/
-
-# CeejiyeDB Data
-data.json
-*.db
-wal.log
-
-# System
-.DS_Store
-.env
+ceejiyedb/data.json
+tests/test_data.json
