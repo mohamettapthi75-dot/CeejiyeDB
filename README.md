@@ -1,119 +1,87 @@
 <div align="center">
 
-# 🗄️ CeejiyeDB
+# 🗄️ CeejiyeDB (Rust + Python Hybrid)
 
 ### *Xogta Soomaalida — The Somali Database Engine*
 
-
-
+![Rust](https://img.shields.io/badge/Rust-1.70+-orange?style=for-the-badge&logo=rust&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 
-
-
-
-![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
-
-
-
-
-![Status](https://img.shields.io/badge/Status-Active-brightgreen?style=for-the-badge)
-
-
-
-
-![Language](https://img.shields.io/badge/Language-Somali-blue?style=for-the-badge)
-
-
-
-**CeejiyeDB** waa engine database oo Python ku dhisan, Redis u eg, laakiin amarrada **Af-Soomaali** ku hadla — CeejiyeLang.
-
-[🚀 Bilow Hadda](#-sida-loo-isticmaalo) · [📖 Amarrada](#-amarrada-ceejiiyelang) · [🏗️ Qaab-dhismeedka](#%EF%B8%8F-qaab-dhismeedka)
+**CeejiyeDB** waa engine database oo isku darsaday awoodda **Rust** (core engine) iyo dabacsanaanta **Python** (CLI, SDK, & API).
 
 </div>
 
 ---
 
-## ✨ Maxay CeejiyeDB Gaara Tahay?
+## 🏗️ Architecture
+```text
+┌────────────────┐      ┌─────────────────────┐      ┌──────────────┐
+│  Python CLI    │ ───► │   PyO3 Bindings     │ ───► │  Rust Core   │
+│  (ceejiyedb)   │      │   (ceejiye_core)    │      │  (storage)   │
+└────────────────┘      └─────────────────────┘      └──────────────┘
+                                  │                          │
+                                  ▼                          ▼
+                        ┌─────────────────────┐      ┌──────────────┐
+                        │  Async TCP Server   │      │  Persistence │
+                        │  (Tokio - 7379)     │      │  (JSON/WAL)  │
+                        └─────────────────────┘      └──────────────┘
+                                  │
+                                  ▼
+                        ┌─────────────────────┐
+                        │  FastAPI REST API   │ (Port 8000)
+                        │  (ceejiyedb/api.py) │
+                        └─────────────────────┘
+```
 
-- 🇸🇴 **Af-Soomaali** — Amarrada oo dhan Soomaali
-- ⚡ **Xawli sarreeya** — In-memory storage, Redis u eg
-- 💾 **Xog la badbaadin karo** — JSON persistence toos ah
-- 🛡️ **Ammaan** — Error handling buuxa
-- 🧩 **Fudud** — Akhrin, baranba fudud
+---
+
+## ⚡ Build & Install
+
+```bash
+# Install maturin
+pip install maturin
+
+# Build and install locally
+maturin build --release
+pip install core/target/wheels/*.whl
+```
 
 ---
 
 ## 🚀 Sida Loo Isticmaalo
 
-### 1. Ku keen mashiinkaaga
-```bash
-git clone https://github.com/mohamettapthi75-dot/CeejiyeDB.git
-cd CeejiyeDB
-```
-
-### 2. Bilow
+### CLI Terminal
 ```bash
 python3 ceejiyedb/main.py
 ```
 
-### 3. Bilaabis
-```text
-╔══════════════════════════════╗
-║     CeejiyeDB v1.1.0  🇸🇴   ║
-║  Xogta Soomaalida, Xoogga   ║
-╚══════════════════════════════╝
-Ku soo dhawoow CeejiyeDB. Qor CAAWI si aad amarrada u aragto.
+### REST API
+```bash
+uvicorn ceejiyedb.api:app --reload
 ```
+
+---
 
 ## 📖 Amarrada CeejiyeLang
 
-| Amar | Isticmaalka | Tusaale | Macnaha |
-| :--- | :--- | :--- | :--- |
-| **KAYDI** | `KAYDI <fur> <qii>` | `KAYDI magac Ceejiye` | Keydi qiime |
-| **SOOQAAD** | `SOOQAAD <fur>` | `SOOQAAD magac` | Soo qaad qiime |
-| **TIR** | `TIR <fur>` | `TIR magac` | Tir fur |
-| **CUSB** | `CUSB <fur> <qii>` | `CUSB magac Fadumo` | Cusboonaysii qiime |
-| **TIJAABO** | `TIJAABO <fur>` | `TIJAABO magac` | Hubi in fur jiro |
-| **LIIS** | `LIIS` | `LIIS` | Tus dhammaan furahaaga |
-| **TIRI** | `TIRI` | `TIRI` | Tiri furaha |
-| **NADIIFI** | `NADIIFI` | `NADIIFI` | Nadiifi xog oo dhan |
-| **CAAWI** | `CAAWI` | `CAAWI` | Tus amarrada oo dhan |
-| **DHAMAN** | `DHAMAN` | `DHAMAN` | Ka bax |
+| Amar | Isticmaalka | Macnaha |
+| :--- | :--- | :--- |
+| **KAYDI** | `KAYDI fure qiime` | Keydi xogta |
+| **SOOQAAD** | `SOOQAAD fure` | Soo qaad xogta |
+| **TIR** | `TIR fure` | Tirtir xogta |
+| **MUDDAD** | `MUDDAD fure 60` | TTL - Waqti kadib tirtir |
+| **KOOB** | `KOOB tiriye` | Kordhi tiro |
+| **DHIMIS** | `DHIMIS tiriye` | Ka dhim tiro |
+| **XAALAD** | `XAALAD` | Xaaladda database-ka |
 
 ---
 
-## 🏗️ Qaab-dhismeedka
-```text
-CeejiyeDB/
-├── ceejiyedb/
-│   ├── main.py        # CLI interface + banner + CAAWI
-│   ├── parser.py      # Command tokenizer iyo parser
-│   ├── storage.py     # In-memory store + JSON persistence
-│   └── commands.py    # Fulinta amarrada oo dhan
-├── data.json          # Database file (auto-created)
-├── .gitignore
-└── README.md
-```
-
-## ⚙️ Sida Gudaha u Shaqeyso
-Isticmaalaha → **main.py** → **parser.py** → **commands.py** → **storage.py** → **data.json**
-
-- **parser.py** — Amarku wuu kala gooyo token-ka
-- **commands.py** — Amarka wuu fuliyo
-- **storage.py** — Xogta wuu keydiyo (memory + JSON)
+## ⚙️ Requirements
+- Rust 1.70+
+- Python 3.12+
+- Maturin
+- FastAPI & Uvicorn
 
 ---
 
-## 🗺️ Mustaqbalka (Roadmap)
-- [ ] **MUDDAD** — TTL / key expiry
-- [ ] **KOOB** — Integer increment
-- [ ] **CeejiyeLang SDK** (Python package)
-- [ ] **TCP server** (run as daemon)
-- [ ] **Web dashboard**
-
-## 📄 Ruqsadda
-MIT License © 2025 mohamettapthi75-dot
-
----
-
-**CeejiyeDB — Af-Soomaali, Xoog Buuxa 🇸🇴**
+**CeejiyeDB — Af-Soomaali, Awood Rust 🦀**

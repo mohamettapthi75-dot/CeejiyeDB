@@ -5,9 +5,10 @@ use std::thread;
 mod types;
 mod storage;
 mod server;
+mod dispatch;
 
-use types::CeejiyeValue;
 use storage::Storage;
+use dispatch::dispatch_command;
 
 #[pyclass]
 struct CeejiyeStore {
@@ -17,69 +18,15 @@ struct CeejiyeStore {
 #[pymethods]
 impl CeejiyeStore {
     #[new]
-    fn new() -> Self {
+    fn new(db_path: Option<String>) -> Self {
+        let path = db_path.unwrap_or_else(|| "data.json".to_string());
         Self {
-            inner: Arc::new(Mutex::new(Storage::new())),
+            inner: Arc::new(Mutex::new(Storage::new(path))),
         }
     }
 
-    fn set(&mut self, key: String, value: String) {
-        let mut db = self.inner.lock().unwrap();
-        db.set(key, CeejiyeValue::Qoraal(value));
-    }
-
-    fn set_with_ttl(&mut self, key: String, value: String, seconds: u64) {
-        let mut db = self.inner.lock().unwrap();
-        db.set_with_ttl(key, CeejiyeValue::Qoraal(value), seconds);
-    }
-
-    fn get(&mut self, key: String) -> PyResult<Option<String>> {
-        let mut db = self.inner.lock().unwrap();
-        match db.get(&key) {
-            Some(CeejiyeValue::Qoraal(s)) => Ok(Some(s)),
-            Some(CeejiyeValue::Tiro(n)) => Ok(Some(n.to_string())),
-            Some(CeejiyeValue::Liis(l)) => Ok(Some(format!("{:?}", l))),
-            None => Ok(None),
-        }
-    }
-
-    fn delete(&mut self, key: String) -> bool {
-        let mut db = self.inner.lock().unwrap();
-        db.delete(&key)
-    }
-
-    fn exists(&mut self, key: String) -> bool {
-        let mut db = self.inner.lock().unwrap();
-        db.exists(&key)
-    }
-
-    fn count(&mut self) -> usize {
-        let mut db = self.inner.lock().unwrap();
-        db.count()
-    }
-
-    fn clear(&mut self) {
-        let mut db = self.inner.lock().unwrap();
-        db.clear();
-    }
-
-    fn keys(&mut self) -> Vec<String> {
-        let mut db = self.inner.lock().unwrap();
-        db.get_all_keys()
-    }
-
-    fn increment(&mut self, key: String) -> PyResult<i64> {
-        let mut db = self.inner.lock().unwrap();
-        db.increment(key).map_err(|e| PyErr::new::<pyo3::exceptions::PyTypeError, _>(e))
-    }
-
-    fn get_type(&mut self, key: String) -> Option<String> {
-        let mut db = self.inner.lock().unwrap();
-        db.get(&key).map(|v| match v {
-            CeejiyeValue::Qoraal(_) => "Qoraal".to_string(),
-            CeejiyeValue::Tiro(_) => "Tiro".to_string(),
-            CeejiyeValue::Liis(_) => "Liis".to_string(),
-        })
+    fn execute(&mut self, request: String) -> String {
+        dispatch_command(&self.inner, request.trim())
     }
 
     fn start_server(&self, port: u16) {
