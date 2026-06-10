@@ -13,26 +13,25 @@ BOLD = "\033[1m"
 def print_banner():
     banner = f"""{BOLD}{BLUE}
 ╔══════════════════════════════╗
-║     CeejiyeDB v1.1.0  🇸🇴   ║
+║     CeejiyeDB v1.2.0  🇸🇴   ║
 ║  Xogta Soomaalida, Xoogga   ║
 ╚══════════════════════════════╝{RESET}
 """
     print(banner)
-    print("Ku soo dhawoow CeejiyeDB. Qor CAAWI si aad amarrada u aragto.")
+    print("Ku soo dhawoow CeejiyeDB v1.2.0. Qor CAAWI si aad amarrada u aragto.")
 
 def print_help():
     help_text = f"""
-{BOLD}📖 Amarrada CeejiyeLang{RESET}
+{BOLD}📖 Amarrada CeejiyeLang v1.2.0{RESET}
 {YELLOW}Amar        Isticmaalka             Tusaale             Macnaha{RESET}
-KAYDI       KAYDI <fur> <qii>       KAYDI magac Ceejiye Keydi qiime
+KAYDI       KAYDI <fur> <qii>       KAYDI magac Jules   Keydi qiime
 SOOQAAD     SOOQAAD <fur>           SOOQAAD magac       Soo qaad qiime
 TIR         TIR <fur>               TIR magac           Tir fur
-CUSB        CUSB <fur> <qii>        CUSB magac Fadumo   Cusboonaysii qiime
-TIJAABO     TIJAABO <fur>           TIJAABO magac       Hubi in fur jiro
-LIIS        LIIS                    LIIS                Tus dhammaan furahaaga
-TIRI        TIRI                    TIRI                Tiri furaha
-NADIIFI     NADIIFI                 NADIIFI             Nadiifi xog oo dhan
-CAAWI       CAAWI                   CAAWI               Tus amarrada oo dhan
+MUDDAD      MUDDAD <fur> <ilb>      MUDDAD x 60         Set TTL
+KOOB        KOOB <fur>              KOOB tiriye         Kordhi (Increment)
+DHIMIS      DHIMIS <fur>            DHIMIS tiriye       Dhim (Decrement)
+XAALAD      XAALAD                  XAALAD              Tus xaaladda DB
+CAAWI       CAAWI                   CAAWI               Tus amarrada
 DHAMAN      DHAMAN                  DHAMAN              Ka bax
 """
     print(help_text)
@@ -46,7 +45,9 @@ def main():
 
     while True:
         try:
-            # Interactive terminal prompt
+            # Active expiration purge before each prompt
+            storage.purge_expired()
+
             user_input = input(f"{BOLD}{YELLOW}CeejiyeDB > {RESET}")
 
             command, args = parser.parse(user_input)
@@ -64,22 +65,19 @@ def main():
                 print_help()
                 continue
 
-            # Internal markers from CommandHandler are now checked using explicit codes
             if isinstance(response, str) and response.startswith("SUCCESS:"):
-                clean_msg = response.replace("SUCCESS:", "")
-                print(f"{GREEN}{clean_msg}{RESET}")
+                print(f"{GREEN}{response.replace('SUCCESS:', '')}{RESET}")
             elif isinstance(response, str) and response.startswith("ERROR:"):
-                clean_msg = response.replace("ERROR:", "")
-                print(f"{RED}{clean_msg}{RESET}")
+                print(f"{RED}{response.replace('ERROR:', '')}{RESET}")
             else:
-                # This is likely a value returned from SOOQAAD or LIIS/TIRI
+                # Value return or Multi-line report
                 print(f"{BOLD}{response}{RESET}")
 
         except KeyboardInterrupt:
             print(f"\n{GREEN}Nabad gelyo! 👋{RESET}")
             break
         except Exception as e:
-            print(f"{RED}Khalad aan la filayn: {e}{RESET}")
+            print(f"{RED}Khalad: {e}{RESET}")
 
 if __name__ == "__main__":
     main()

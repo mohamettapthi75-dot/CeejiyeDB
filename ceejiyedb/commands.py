@@ -1,6 +1,6 @@
 class CommandHandler:
     """
-    Executes commands on the storage based on CeejiyeLang syntax.
+    Executes commands on the storage based on CeejiyeLang syntax v1.2.0.
     """
     def __init__(self, storage):
         self.storage = storage
@@ -26,7 +26,7 @@ class CommandHandler:
             if value is not None:
                 return value
             else:
-                return f"ERROR:Khalad: '{key}' lama helin."
+                return f"ERROR:Khalad: '{key}' lama helin ama waa uu dhacay."
 
         elif command == "TIR":
             if len(args) < 1:
@@ -37,45 +37,49 @@ class CommandHandler:
             else:
                 return f"ERROR:Khalad: '{key}' lama helin markaa lama tiri karo."
 
-        elif command == "LIIS":
-            keys = self.storage.get_all_keys()
-            if not keys:
-                return "Wax xog ah kuma jirto."
-            return "\n".join(keys)
-
-        elif command == "TIJAABO":
-            if len(args) < 1:
-                return "ERROR:Khalad: TIJAABO waxay u baahan tahay fure. (Tusaale: TIJAABO magac)"
-            key = args[0]
-            if self.storage.exists(key):
-                return "Haa, waa jirtaa."
-            else:
-                return "Maya, kuma jirto."
-
-        elif command == "TIRI":
-            count = self.storage.count()
-            return f"Wadarta furaha: {count}"
-
-        elif command == "CUSB":
+        elif command == "MUDDAD":
             if len(args) < 2:
-                return "ERROR:Khalad: CUSB waxay u baahan tahay fure iyo qiimo. (Tusaale: CUSB magac Fadumo)"
+                return "ERROR:Khalad: MUDDAD waxay u baahan tahay fure iyo ilbiriqsiyo. (Tusaale: MUDDAD magac 60)"
             key = args[0]
-            value = " ".join(args[1:])
-            if self.storage.exists(key):
-                self.storage.set(key, value)
-                return f"SUCCESS:Guul: '{key}' waa la cusboonaysiiyay."
-            else:
-                return "ERROR:Furaha kuma jiro xogta."
+            try:
+                seconds = int(args[1])
+                if self.storage.set_ttl(key, seconds):
+                    return f"SUCCESS:Guul: '{key}' waxaa loo muddeeyay {seconds} ilbiriqsi."
+                else:
+                    return f"ERROR:Khalad: '{key}' lama helin."
+            except ValueError:
+                return "ERROR:Khalad: Ilbiriqsiyadu waa inay noqdaan tiro."
 
-        elif command == "NADIIFI":
-            self.storage.clear()
-            return "SUCCESS:Dhammaan xogta waa la tirtiray."
+        elif command == "KOOB":
+            if len(args) < 1:
+                return "ERROR:Khalad: KOOB wuxuu u baahan yahay fure. (Tusaale: KOOB tiriye)"
+            try:
+                new_val = self.storage.increment(args[0])
+                return f"SUCCESS:Guul: '{args[0]}' hadda waa {new_val}."
+            except ValueError as e:
+                return str(e)
 
-        elif command == "CAAWI":
-            return "HELP_COMMAND"
+        elif command == "DHIMIS":
+            if len(args) < 1:
+                return "ERROR:Khalad: DHIMIS wuxuu u baahan yahay fure. (Tusaale: DHIMIS tiriye)"
+            try:
+                new_val = self.storage.decrement(args[0])
+                return f"SUCCESS:Guul: '{args[0]}' hadda waa {new_val}."
+            except ValueError as e:
+                return str(e)
+
+        elif command == "XAALAD":
+            stats = self.storage.get_stats()
+            return (f"XAALADDA DATABASE-KA (v1.2.0):\n"
+                    f" - Wadarta Furayaasha: {stats['keys']}\n"
+                    f" - Xajmiga RAM-ka (est): {stats['memory']} bytes\n"
+                    f" - Xajmiga Faylka: {stats['file_size']} bytes")
 
         elif command == "DHAMAN":
             return "DATABASE_EXIT"
 
+        elif command == "CAAWI":
+            return "HELP_COMMAND"
+
         else:
-            return f"ERROR:Khalad: Amarkan '{command}' ma garanayo. Fadlan isticmaal CAAWI si aad amarrada u aragto."
+            return f"ERROR:Khalad: Amarkan '{command}' ma garanayo. Qor CAAWI si aad u aragto amarrada."
